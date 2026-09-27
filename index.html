@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Для Карины ✨</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-dark: #0c0a14;
+            --purple-deep: #161224;
+            --accent-lavender: #c4b5fd;
+            --accent-peach: #fbd38d;
+            --accent-gold: #f6e05e;
+            --text-main: #f3f4f6;
+            --text-muted: #a1a1aa;
+            --glass-bg: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-hover: rgba(255, 255, 255, 0.08);
+            --card-radius: 20px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+            position: relative;
+            background: radial-gradient(circle at 50% 0%, #23193d 0%, #0c0a14 75%);
+            line-height: 1.5;
+        }
+
+        /* Responsive Background Canvas */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: clamp(1rem, 4vw, 2.5rem);
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(2rem, 5vw, 4rem);
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            padding-top: clamp(2rem, 8vh, 5rem);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            background: rgba(196, 181, 253, 0.08);
+            border: 1px solid rgba(196, 181, 253, 0.2);
+            border-radius: 9999px;
+            font-size: clamp(0.75rem, 2vw, 0.875rem);
+            color: var(--accent-lavender);
+            margin-bottom: 1.25rem;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: clamp(2.2rem, 7.5vw, 4.5rem);
+            font-weight: 600;
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 40%, var(--accent-lavender) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            max-width: 900px;
+        }
+
+        .subtitle {
+            font-size: clamp(0.95rem, 2.5vw, 1.25rem);
+            color: var(--text-muted);
+            max-width: 600px;
+            font-weight: 300;
+            line-height: 1.6;
+            padding: 0 0.5rem;
+        }
+
+        /* Responsive Grid for Compliment Cards */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(clamp(260px, 100%, 310px), 1fr));
+            gap: clamp(1rem, 2.5vw, 1.5rem);
+            width: 100%;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--card-radius);
+            padding: clamp(1.25rem, 3vw, 1.8rem);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                        border-color 0.3s ease, 
+                        box-shadow 0.3s ease,
+                        background-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 180px;
+            cursor: pointer;
+        }
+
+        /* Hover & Touch interactions */
+        @media (hover: hover) {
+            .card:hover {
+                transform: translateY(-4px);
+                border-color: rgba(196, 181, 253, 0.35);
+                box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5), 0 0 15px rgba(196, 181, 253, 0.08);
+                background: var(--glass-hover);
+            }
+            .card:hover .card-icon {
+                transform: scale(1.08) rotate(4deg);
+                color: var(--accent-peach);
+                background: rgba(251, 211, 141, 0.12);
+            }
+        }
+
+        .card:active {
+            transform: scale(0.98);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .card-icon {
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-lavender);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .card-title {
+            font-size: clamp(1.1rem, 2.5vw, 1.25rem);
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .card-desc {
+            font-size: clamp(0.875rem, 2vw, 0.95rem);
+            color: var(--text-muted);
+            line-height: 1.55;
+            font-weight: 300;
+        }
+
+        /* Generator Section */
+        .interactive-section {
+            background: linear-gradient(180deg, rgba(22, 18, 36, 0.7) 0%, rgba(12, 10, 20, 0.9) 100%);
+            border: 1px solid var(--glass-border);
+            border-radius: clamp(20px, 4vw, 32px);
+            padding: clamp(1.5rem, 5vw, 3.5rem);
+            text-align: center;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-size: clamp(1.8rem, 5vw, 2.6rem);
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .generator-box {
+            width: 100%;
+            max-width: 650px;
+            min-height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: clamp(1.2rem, 3vw, 2rem) 0;
+            padding: 1.25rem 1.5rem;
+            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+        }
+
+        .generator-text {
+            font-size: clamp(0.95rem, 2.2vw, 1.15rem);
+            color: #e2e8f0;
+            font-weight: 400;
+            line-height: 1.6;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        /* Touch-Friendly Button */
+        .btn {
+            background: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 100%);
+            color: #0c0a14;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: clamp(0.95rem, 2vw, 1.05rem);
+            padding: clamp(0.85rem, 2.5vw, 1.1rem) clamp(1.8rem, 4vw, 2.5rem);
+            border: none;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            box-shadow: 0 8px 20px -4px rgba(196, 181, 253, 0.4);
+            min-height: 48px; /* Touch target accessibility */
+            touch-action: manipulation;
+        }
+
+        @media (hover: hover) {
+            .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 12px 28px -4px rgba(196, 181, 253, 0.6);
+                background: linear-gradient(135deg, #d8b4fe 0%, #c4b5fd 100%);
+            }
+        }
+
+        .btn:active {
+            transform: translateY(1px) scale(0.97);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding-bottom: clamp(1rem, 3vw, 2rem);
+            color: var(--text-muted);
+            font-size: clamp(0.8rem, 1.8vw, 0.875rem);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sparkle-icon {
+            color: var(--accent-peach);
+            display: inline-block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="container">
+        
+        <!-- Header -->
+        <header class="header">
+            <div class="badge">
+                <i data-lucide="sparkles" class="sparkle-icon" style="width: 16px; height: 16px;"></i>
+                <span>Порция отличного настроения</span>
+            </div>
+            <h1>Карина, этот день стать чуть лучше с тобой!</h1>
+            <p class="subtitle">
+                Просто легкое напоминание о твоем утонченном стиле, уме и той самой вдохновляющей энергии, которую ты излучаешь.
+            </p>
+        </header>
+
+        <!-- Grid Cards -->
+        <main class="grid">
+            
+            <div class="card">
+                <div>
+                    <div class="card-header">
+                        <div class="card-icon"><i data-lucide="zap"></i></div>
+                        <h3 class="card-title">Особая энергия</h3>
+                    </div>
+                    <p class="card-desc">Рядом с тобой всегда легко. У тебя есть редкая способность создавать классную атмосферу простым присутствием.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div>
+                    <div class="card-header">
+                        <div class="card-icon"><i data-lucide="smile"></i></div>
+                        <h3 class="card-title">Искренний юмор</h3>
+                    </div>
+                    <p class="card-desc">Твой юмор и внимание к деталям подкупают. С тобой приятно посмеяться над любыми мелочами.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div>
+                    <div class="card-header">
+                        <div class="card-icon"><i data-lucide="palette"></i></div>
+                        <h3 class="card-title">Чувство стиля</h3>
+                    </div>
+                    <p class="card-desc">Твой эстетический вкус виден во всем: от аккуратности в деталях до того, как ты выбираешь вещи вокруг себя.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div>
+                    <div class="card-header">
+                        <div class="card-icon"><i data-lucide="brain"></i></div>
+                        <h3 class="card-title">Острый ум</h3>
+                    </div>
+                    <p class="card-desc">Замечательно наблюдать, как нестандартно ты умеешь мыслить и смотреть на вещи под неожиданным углом.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div>
+                    <div class="card-header">
+                        <div class="card-icon"><i data-lucide="sun"></i></div>
+                        <h3 class="card-title">Теплая улыбка</h3>
+                    </div>
+                    <p class="card-desc">Когда ты искренне улыбаешься — это моментально заряжает. Улыбайся чаще, тебе это невероятно идет!</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div>
+                    <div class="card-header">
+                        <div class="card-icon"><i data-lucide="compass"></i></div>
+                        <h3 class="card-title">Свой путь</h3>
+                    </div>
+                    <p class="card-desc">Вдохновляет видеть человека, который уверенно остается собой, развивается и идет к своим целям.</p>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Interactive Generator -->
+        <section class="interactive-section">
+            <h2 class="section-title">Генератор моментов</h2>
+            <p style="color: var(--text-muted); font-size: clamp(0.85rem, 2vw, 0.95rem);">Нажми на кнопку, если нужен небольшой заряд позитива</p>
+            
+            <div class="generator-box">
+                <p class="generator-text" id="compliment-text">Нажми ниже, чтобы получить приятную мысль на сегодня ✨</p>
+            </div>
+
+            <button class="btn" id="generate-btn">
+                <i data-lucide="sparkles" style="width: 18px; height: 18px;"></i>
+                <span>Получить вдохновение</span>
+            </button>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Сделай паузу, выпей вкусный кофе и просто улыбнись. Отличного дня!</p>
+            <p style="opacity: 0.5; font-size: 0.8rem; margin-top: 0.2rem;">Сделано с уважением для Карины ✦</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Random compliments & wishes array
+        const compliments = [
+            "Ты отлично справляешься со всем, за что берешься. Помни об этом!",
+            "Твой день сегодня обязательно принесет хотя бы один очень приятный момент.",
+            "Напоминание: ты намного сильнее и талантливее, чем тебе иногда кажется.",
+            "Сегодня отличный повод порадовать себя любимым напитком или вкусным десертом.",
+            "Твой вкус и внимание к деталям делают этот мир немного эстетичнее.",
+            "Улыбнись! У тебя прекрасная улыбка, способная украсить любой день.",
+            "Карина, пусть сегодня все задачи решаются легко и без лишней суеты.",
+            "Пусть вокруг будут только люди, которые вдохновляют и дают энергию!"
+        ];
+
+        const complimentText = document.getElementById('compliment-text');
+        const generateBtn = document.getElementById('generate-btn');
+
+        // Generator logic with touch response
+        generateBtn.addEventListener('click', () => {
+            complimentText.style.opacity = '0';
+            complimentText.style.transform = 'translateY(-8px)';
+
+            setTimeout(() => {
+                const randomIndex = Math.floor(Math.random() * compliments.length);
+                complimentText.textContent = compliments[randomIndex];
+                
+                complimentText.style.opacity = '1';
+                complimentText.style.transform = 'translateY(0)';
+            }, 250);
+        });
+
+        // Lightweight Responsive Particle Canvas
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let particles = [];
+
+        function resizeCanvas() {
+            // Support high DPI screens gracefully
+            const dpr = window.devicePixelRatio || 1;
+            width = window.innerWidth;
+            height = window.innerHeight;
+
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            ctx.scale(dpr, dpr);
+
+            initParticles();
+        }
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 1.5 + 0.5;
+                this.alpha = Math.random() * 0.4 + 0.1;
+                this.speedY = Math.random() * 0.25 + 0.08;
+                this.maxAlpha = this.alpha;
+                this.fading = Math.random() > 0.5;
+            }
+
+            update() {
+                this.y -= this.speedY;
+                if (this.y < -10) {
+                    this.y = height + 10;
+                    this.x = Math.random() * width;
+                }
+
+                // Smooth fading twinkle
+                if (this.fading) {
+                    this.alpha -= 0.004;
+                    if (this.alpha <= 0.05) this.fading = false;
+                } else {
+                    this.alpha += 0.004;
+                    if (this.alpha >= this.maxAlpha) this.fading = true;
+                }
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(196, 181, 253, ${this.alpha})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            // Reduce particle count on mobile screens for better performance
+            const particleCount = width < 600 ? 30 : 55;
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        // Start animations after DOM is fully loaded
+        window.onload = function() {
+            resizeCanvas();
+            animateParticles();
+        };
+    </script>
+</body>
+</html>
